@@ -1,47 +1,49 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(){
-   int limit;
-   int big = 0;
-   int little = 0;
+   int *nums = NULL;
+   int capacity = 5;
+   int count = 0;
 
-   printf("Say the number of numbers you want to import: ");
-   scanf("%d", &limit);
-
-   int nums[limit];
-
-   /*
-   trace for loop: 
-                  0 < 4 (T) - 1 < 4 (T) - 2 < 4 (T) - 3 < 4 (T) - 4 < 4 (F)
-   */
-   for(int i = 0; i < limit; i++) {
-      printf("enter number %d: ", i+1);
-      scanf("%d", &nums[i]);
-   }
-   printf("\n");
+   nums = malloc(capacity * sizeof(int));
    
-   for (int i = 0; i < limit; i++) {
-      if(nums[i] > big) {
-         big = nums[i];
-         printf("logs: big = %d\n", big);
+   while(1) {
+      if(count == capacity) {
+         capacity += 5;
+         nums = realloc(nums, capacity * sizeof(int));
+         if (nums == NULL) {
+            printf("Memory allocation failed.\n");
+            return 1;
+         }
+      }
+      
+      printf("Enter number %d (or -1 to stop): ", count + 1);
+      int input;
+      scanf("%d", &input);
+
+      if (input == -1) break;
+
+      nums[count++] = input;
+   }
+   
+   int min = nums[0];
+   int max = nums[0];
+   for (int i = 0; i < count; i++) {
+      if(nums[i] > max) {
+         max = nums[i];
+      }
+      if(nums[i] < min) {
+         min = nums[i];
       }
    }
-   printf("logs: big number trace in done\n");
-   
-   little = big;
-   
-   for (int i = 0; i < limit; i++) {
-      if(nums[i] < little) {
-         little = nums[i];
-         printf("logs: short = %d\n", little);
-      }
-   }
-   printf("logs: little number trace in done");
-
    
    printf("\n.................................\n");
-   printf("min number of list = %d\n", little);
-   printf("max number of list = %d\n", big);
+   printf("min number of list = %d\n", min);
+   printf("max number of list = %d\n", max);
+
+   free(nums);
+   nums = NULL;
 
    return 0;
 }
